@@ -1,0 +1,6 @@
+*
+!*/
+!.gitignore
+!filterscripts/**/*
+!gamemodes/**/*
+*.amx
