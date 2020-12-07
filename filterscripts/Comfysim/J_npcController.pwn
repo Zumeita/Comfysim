@@ -29,11 +29,11 @@
 #define CHILLIAD_DOWN 3
 #define CHILLIAD_UP 4
 
-enum AI_DATA {t
+enum AI_DATA {
 	id,
 	vehicle_model,
 	vehicle_id,
-	skinid,h
+	skinid,
 	cycles,
 	start_cycle,
 	cc1,

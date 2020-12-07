@@ -1,12 +1,12 @@
 
 // Directory to store/read each Entrance .ini file.
-#define ENTRANCE_FOLDER "J_Core/Entrances"
+#define ENTRANCE_FOLDER "Comfysim/Entrances"
 // Amount of Enterances to read from the file.
 #define MAX_ENTRANCES 3
 //Max size of the string to format the folder/file directory.
-#define MAX_FILE_NAME_LEN 35
+#define MAX_FILE_NAME_LEN 40
 #define MAX_ENTRANCE_NAME 35
-#define MAX_3DTEXT_LEN 100
+#define MAX_3DTEXT_LEN 256
 //#define INVALID_3DTEXT_ID -1
 
 // Constants to make the script easier to read/understand.
@@ -20,9 +20,9 @@
 
 #define TEXT_COLOUR 0xCCCCCCAA
 #define TEXT_DRAW_DISTANCE 10.5
-#define INTERIOR_ENTRANCE_TEXT "{CCCCCC}%s\n{CCCCCC}Press '{FFFFFF}~k~CONVERSATION_YES~{CCCCCC}' to enter"
-#define INTERIOR_EXIT_TEXT "{CCCCCC}%s\n{CCCCCC}Press '{FFFFFF}~k~CONVERSATION_YES~{CCCCCC}' to exit"
-#define GATE_TEXT "{CCCCCC}%s\n{CCCCCC}Press '{FFFFFF}~k~CONVERSATION_YES~{CCCCCC}' to open"
+#define INTERIOR_ENTRANCE_TEXT "{CCCCCC}%s\n{CCCCCC}Press '{FFFF6C}~k~CONVERSATION_YES~{CCCCCC}' to enter"
+#define INTERIOR_EXIT_TEXT "{CCCCCC}%s\n{CCCCCC}Press '{FFFF6C}~k~CONVERSATION_YES~{CCCCCC}' to exit"
+#define GATE_TEXT "{CCCCCC}%s\n{CCCCCC}Press '{FFFF6C}~k~CONVERSATION_YES~{CCCCCC}' to open"
 	
 //Enumerator for gEntData array.
 enum ENTRANCE_DATA {
@@ -103,6 +103,7 @@ stock LoadEntrances() {
 		gEntData[idx][ey] = dini_Float(file_name, "y");
 		gEntData[idx][ez] = dini_Float(file_name, "z");
 		gEntData[idx][er] = dini_Float(file_name, "r");
+		printf("[DEBUG]: X (%f), Y (%f), Z (%f), R (%f)", gEntData[idx][ex], gEntData[idx][ey], gEntData[idx][ez], gEntData[idx][er]);
 		gEntData[idx][e_interior] = dini_Int(file_name, "interior");
 		gEntData[idx][ex2] = dini_Float(file_name, "x2");
 		gEntData[idx][ey2] = dini_Float(file_name, "y2");
@@ -123,35 +124,40 @@ stock LoadEntrances() {
 		gEntData[idx][cz] = dini_Float(file_name, "cz");
 		gEntData[idx][crx] = dini_Float(file_name, "crx");
 		gEntData[idx][crz] = dini_Float(file_name, "cry");
-		gEntData[idx][crz] = dini_Float(file_name, "cry");
+		gEntData[idx][crz] = dini_Float(file_name, "crz");
 		gEntData[idx][e_object_model] = dini_Int(file_name, "object_model");
+		gEntData[idx][type] = dini_Int(file_name, "object_mode");
 		gEntData[idx][open_time] = dini_Int(file_name, "object_time");
 		gEntData[idx][open_state] = 0;
-		format(gEntData[idx][ename], MAX_3DTEXT_LEN, dini_Get(file_name, "name"));
-		
-		if(!dini_Int(file_name, "3dtext")) { // no 3D Text for this entrance
-		    //gEntData[idx][enter_text_id] = INVALID_3DTEXT_ID;
-		    //gEntData[idx][exit_text_id] = INVALID_3DTEXT_ID;
-		}
-		else {
+		format(gEntData[idx][ename], MAX_ENTRANCE_NAME, dini_Get(file_name, "text"));
+
+		if(dini_Int(file_name, "3dtext") == 1) {
+			print("3D Text!");
 		    new string[MAX_3DTEXT_LEN];
-		    if(gEntData[idx][e_object_model] == INVALID_OBJECT_ID) {
-				format(string, MAX_3DTEXT_LEN, INTERIOR_ENTRANCE_TEXT, gEntData[idx][ename]);
-				gEntData[idx][enter_text_id] = Create3DTextLabel(string, TEXT_COLOUR, gEntData[idx][ex], gEntData[idx][ey], gEntData[idx][ez], TEXT_DRAW_DISTANCE, 0, 1);
-		  		format(string, MAX_3DTEXT_LEN, INTERIOR_EXIT_TEXT, gEntData[idx][ename]);
-				gEntData[idx][exit_text_id] = Create3DTextLabel(string, TEXT_COLOUR, gEntData[idx][ex2], gEntData[idx][ey2], gEntData[idx][ez2], TEXT_DRAW_DISTANCE, 0, 1);
+		    if(gEntData[idx][e_object_model] == -1) {
+		    	print("3D Text:Not a gate");
+				format(string, MAX_3DTEXT_LEN, "{CCCCCC}%s\n{CCCCCC}Press '{FFFF6C}~k~~CONVERSATION_YES~{CCCCCC}' to enter", gEntData[idx][ename]);
+				printf("%s", string);
+				gEntData[idx][enter_text_id] = Create3DTextLabel(string, 0xCCCCCCAA, gEntData[idx][ex], gEntData[idx][ey], gEntData[idx][ez], TEXT_DRAW_DISTANCE, 0, 1);
+		  		format(string, MAX_3DTEXT_LEN, "{CCCCCC}%s\n{CCCCCC}Press '{FFFF6C}~k~~CONVERSATION_YES~{CCCCCC}' to exit", gEntData[idx][ename]);
+		  		printf("%s", string);
+				gEntData[idx][exit_text_id] = Create3DTextLabel(string, 0xCCCCCCAA, gEntData[idx][ex2], gEntData[idx][ey2], gEntData[idx][ez2], TEXT_DRAW_DISTANCE, 0, 1);
 			}
 			else {
+				print("3D Text: IS a gate");
 			    format(string, MAX_3DTEXT_LEN, GATE_TEXT, gEntData[idx][ename]);
-				gEntData[idx][enter_text_id] = Create3DTextLabel(string, TEXT_COLOUR, gEntData[idx][ox], gEntData[idx][oy], gEntData[idx][oz], TEXT_DRAW_DISTANCE, 0, 1);
+			    printf("%s", string);
+				gEntData[idx][enter_text_id] = Create3DTextLabel("{CCCCCC}%s\n{CCCCCC}Press '{FFFF6C}~k~~CONVERSATION_YES~{CCCCCC}' to open", 0xCCCCCCAA, gEntData[idx][ox], gEntData[idx][oy], gEntData[idx][oz], TEXT_DRAW_DISTANCE, 0, 1);
 			}
 		}
 		
 		if(gEntData[idx][e_object_model] != -1) {
+			printf("Model ID is (%d)", gEntData[idx][e_object_model]);
 		    gEntData[idx][type] = ENTRANCE_TYPE_GATE;
 		    gEntData[idx][e_objectid] = CreateObject(gEntData[idx][e_object_model], gEntData[idx][cx], gEntData[idx][cy], gEntData[idx][cz], gEntData[idx][crx], gEntData[idx][cry], gEntData[idx][crz], 250.0);
 		}
 		else {
+			print("Model ID is -1");
 			gEntData[idx][type] = ENTRANCE_TYPE_INTERIOR;
 			gEntData[idx][e_objectid] = INVALID_OBJECT_ID;
 		}
@@ -206,25 +212,26 @@ stock IsPlayerInAnyEntrance(playerid) {
 		interior = GetPlayerInterior(playerid);
 		distance = GetDistBetweenTwoPoints(x, y, z, gEntData[entranceid][ex], gEntData[entranceid][ey], gEntData[entranceid][ez]);
 
-		if(distance <= gEntData[entranceid][trigger_distance] && interior == gEntData[entranceid][e_interior]) {
-			if(gEntData[entranceid][type] != ENTRANCE_TYPE_GATE) {
-				pEntData[playerid] = ENTRANCE_OUTSIDE;
-		    	ret = entranceid;
-			}
+		if(gEntData[entranceid][trigger_distance] > distance && interior == gEntData[entranceid][e_interior]) {
+			printf("[DEBUG]: distance (%f), trigger_distance (%f), interior (%d), e_interior (%d), x, y, z, (%f, %f, %f) / ex, ey, ez (%f, %f, %f)", distance, gEntData[entranceid][trigger_distance], interior, gEntData[entranceid][e_interior], x, y, z, gEntData[entranceid][ex], gEntData[entranceid][ey], gEntData[entranceid][ez]);
+			//if(gEntData[entranceid][type] != ENTRANCE_TYPE_GATE) {
+			pEntData[playerid] = ENTRANCE_OUTSIDE;
+			printf("[DEBUG] In enterance (%d), return (%d)", entranceid);
+		    return entranceid; //ret = entranceid;
 		}
 		else {
 		    distance = GetDistBetweenTwoPoints(x, y, z, gEntData[entranceid][ex2], gEntData[entranceid][ey2], gEntData[entranceid][ez2]);
 		    if(distance <= gEntData[entranceid][trigger_distance] && interior == gEntData[entranceid][e_interior2]) {
                 if(gEntData[entranceid][type] != ENTRANCE_TYPE_GATE) {
 					pEntData[playerid] = ENTRANCE_INSIDE;
-			    	ret = entranceid;
+			    	return entranceid; //ret = entranceid;
 				}
 			}
 		}
 		printf("[DEBUG] IsPlayerInAnyEntrance(%d) returning entranceid (%d) [1-2 = In entrance, 0 = Not]", playerid, ret);
 		ret = entranceid;
 	}
-	return ret;
+	return -1;
 }
 
 hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
@@ -232,7 +239,7 @@ hook OnPlayerKeyStateChange(playerid, newkeys, oldkeys)
 	if(newkeys & KEY_YES) {
 	    new entranceid = IsPlayerInAnyEntrance(playerid);
 	    
-	    if(entranceid == ENTRANCE_FALSE) {
+	    if(entranceid == -1) {
             printf("[DEBUG] OnPlayerKeyState(%d) - Not near any entrance!", playerid);
 			return 1;
 		} // Not near any entrances.

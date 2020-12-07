@@ -6,11 +6,13 @@
 
 #define PLAYERS 30
 
+#include <jit>
 #include "YSI\YSI_Visual\Y_Commands.inc"
 
 #include <dini2> 					// To be removed in a later release - this is a little outdated but will do me for now. Possibly replaced by Y_ini or MySQL.
 #include <screen-colour-fader>		// Functionality to fade a players screen.
 #include <streamer>					// Incognito / Y_Less' Object streamer.
+#include <sscanf2>
 
 #include "comfysim\J_Functions.inc" // Central repository for all useful functions created for / used by the ComfySim scripts.
 #include "Comfysim\J_Entrances.inc" // Entrance/Interior/Gates engine to control entrances into Interiors, gates into areas etc.
@@ -1726,4 +1728,26 @@ stock strtok(const string[], &index)
 	}
 	result[index - offset] = EOS;
 	return result;
+}
+
+// Testing Y_Commands
+
+YCMD:ent(playerid, params[], help) 
+{
+	new entranceid;
+	if(sscanf(params, "i", entranceid)) {
+		return SendClientMessage(playerid, CHAT_COLOUR_WHITE, "* Params: /ent <entrance id>");
+	}
+	if(entranceid > MAX_ENTRANCES || entranceid < 0) {
+		return SendClientMessage(playerid, CHAT_COLOUR_WHITE, "* Error: Invalid entrance ID.");
+	}
+
+	SetPlayerPos(playerid, gEntData[entranceid][ex], gEntData[entranceid][ey], gEntData[entranceid][ez]);
+	SetPlayerFacingAngle(playerid, gEntData[entranceid][er]);
+	SetPlayerInterior(playerid, gEntData[entranceid][e_interior]);
+
+	new str[128];
+	format(str, 128, "* Teleported to entrance ID %d.", entranceid);
+	SendClientMessage(playerid, CHAT_COLOUR_PALE_DARK_GREEN, str);
+	return 1;
 }
