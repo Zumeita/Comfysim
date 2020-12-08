@@ -40,7 +40,9 @@ public OnFilterScriptInit() { // This include is only used in a Filterscript (J_
 }
 
 public OnPlayerConnect(playerid) {
-	//RemoveBuilding etc.. TO DO
+
+	RemoveBuildingForPlayer(playerid, 1345, 2489.0000000,-1659.9000000,13.1000000, 1.0);
+	
 	return 1;
 }
 
