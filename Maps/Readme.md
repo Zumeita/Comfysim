@@ -15,14 +15,14 @@ You will be using this alot so always keep a copy, alternatively you can just co
 1). Open 'https://www.convertffs.com'\
 2). Copy and paste the entire contents of your MTA .map file to white box.\
 3). Set the Output to 'Incognito's Streamer Plugin' and 'SA-MP CreateVehicle'.\
-4). Set 'Vehicle respawn time' to -1 and then click 'Convert'\
+4). Set 'Vehicle respawn time' to **-1** and then click 'Convert'\
 5). Copy all the output to a text editor (Notepad++ is good for this).\
-6). Press CTRL+H, top box enter 'CreateDynamicObject', bottom box enter 'J_CreateDynamicObject', then click 'Replace All'.\
-7). Press CTRL+H, top box enter '); //object', bottom box enter '-1, -1, -1, -1, -1, true); //object', then click 'Replace All'\
-8). Press CTRL+H, top box enter 'CreateVehicle', bottom box enter 'J_CreateVehicle', then click 'Replace All'.\
-9). Press CTRL+H, top box enter '-1); //', bottom box enter '-1, 0, true, false, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0); //', then click 'Replace All'.\
+6). Press CTRL+H, top box enter '**CreateDynamicObject**', bottom box enter '**J_CreateDynamicObject**', then click 'Replace All'.\
+7). Press CTRL+H, top box enter '**); //object**', bottom box enter '**-1, -1, -1, -1, -1, true); //object**', then click 'Replace All'\
+8). Press CTRL+H, top box enter '**CreateVehicle**', bottom box enter '**J_CreateVehicle**, then click 'Replace All'.\
+9). Press CTRL+H, top box enter '**-1); //**', bottom box enter '**-1, 0, true, false, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0); //**', then click 'Replace All'.\
 10). Using the template from Prerequisites, copy all of the J_CreateVehicle() and J_CreateDynamicVehicle() lines, overwriting the ones in the template.\
-11). IMPORTANT: When you paste your entries, select them all again, this time in the template, and then press 'TAB' to indent properly, otherwise this will cause compiler errors.\
+11). **IMPORTANT**: When you paste your entries, select them all again, this time in the template, and then press 'TAB' to indent properly, otherwise this will cause compiler errors.\
 12). If you have no world objects to remove, save the template as "your_map_name.inc" and select 'All files' from the drop down menu, continue to 'Commit to Git'.\
 
 ### Optional - Removing World Objects 
@@ -31,7 +31,7 @@ You will be using this alot so always keep a copy, alternatively you can just co
 13). Copy the contents of your MTA .map file to the top box and click 'Convert' (Don't worry about any settings, we don't need any of it).\
 14). Select all the RemoveBuildingForPlayer() entries from the bottom box.\
 15). Paste them in the same location as the example RemoveBuildingForPlayer() entries in the template you downloaded earlier, overwritin\
-16). Indent and Save as per step 11 and 12 of Instructions.\
+16). Indent and Save as per **step 11** and 12 of Instructions.\
 
 ### Commit to Git
 
