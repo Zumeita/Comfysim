@@ -1751,3 +1751,11 @@ YCMD:ent(playerid, params[], help)
 	SendClientMessage(playerid, CHAT_COLOUR_PALE_DARK_GREEN, str);
 	return 1;
 }
+
+YCMD:gs(playerid, params[], help) {
+	SetPlayerPos(playerid, 2474.0012,-1665.5029,13.3151);
+	SetPlayerFacingAngle(playerid, 268.7259);
+	SetPlayerInterior(playerid, 0);
+	SendClientMessage(playerid, CHAT_COLOUR_PALE_DARK_GREEN, "* Debug: Home.... 'least it was before I fucked everytan' up... ");
+	return 1;
+}
