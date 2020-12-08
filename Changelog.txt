@@ -2,13 +2,19 @@
 All notable changes documented here for reference.
 Docuentation started 07/12/2020 - any changes/implementations here have not been noted.
 
-## Version [0.1.0]
+## Version [0.1.1] 08/12/2020
 ### Added Functionality
-- j_Entrances engine scripted & first implementation to Flint County Airfield for testing.
-- j_Entrances dynamically loads entrances from 'scriptfiles/Comfysim/entrance_<id>.ini'.
+- J_MapLoader implemented and tested - This is a Filterscript that loads maps in the form of an .inc file from the Maps folder.
+- Functions added to J_Functions which store detailed information about Objects & Vehicles in memory, this will make future scripts more compatible with eachother and engine features very easy to implement as the data will already be present.
+
+
+## Version [0.1.0] 07/12/2020
+### Added Functionality
+- J_Entrances engine scripted & first implementation to Flint County Airfield for testing.
+- J_Entrances dynamically loads entrances from 'scriptfiles/Comfysim/entrance_<id>.ini'.
 - j_Entrances supports toggling of 3DText at all entrances.
-- j_Entrances fully supports moving gates and/or barriers with variable speed/stay open times, using the 'Y' key.
-- j_Entrances fully supports entering and exiting interiors (or other areas) using the 'Y' key.
+- J_Entrances fully supports moving gates and/or barriers with variable speed/stay open times, using the 'Y' key.
+- J_Entrances fully supports entering and exiting interiors (or other areas) using the 'Y' key.
 - Debug command '/ent <entrance id>' implemented for debugging purposes to teleport to an entrance.
 ### Mapping
 - Flint County Airfield received a door on the apron side of the FBO as it was missing.
