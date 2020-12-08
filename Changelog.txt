@@ -6,7 +6,7 @@ Docuentation started 07/12/2020 - any changes/implementations here have not been
 ### Added Functionality
 - j_Entrances engine scripted & first implementation to Flint County Airfield for testing.
 - j_Entrances dynamically loads entrances from 'scriptfiles/Comfysim/entrance_<id>.ini'.
-- j_Entrances supports toggling of 3DText at all enterences.
+- j_Entrances supports toggling of 3DText at all entrances.
 - j_Entrances fully supports moving gates and/or barriers with variable speed/stay open times, using the 'Y' key.
 - j_Entrances fully supports entering and exiting interiors (or other areas) using the 'Y' key.
 - Debug command '/ent <entrance id>' implemented for debugging purposes to teleport to an entrance.
