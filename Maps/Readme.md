@@ -35,7 +35,7 @@ You will be using this alot so always keep a copy, alternatively you can just co
 
 ### Commit to Git
 
-1). Browse to "https://github.com/Zumeita/Comfysim/tree/main/Maps"
+1). Browse to "https://github.com/Zumeita/Comfysim/tree/main/Maps" \
 2). Click "Add File" and select "Upload Files".\
 3). Drag or choose the map.inc file you saved.\
 4). Enter a brief description under "Commit changes".\
