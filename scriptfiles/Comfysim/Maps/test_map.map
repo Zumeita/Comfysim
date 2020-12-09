@@ -1,0 +1,9 @@
+<map edf:definitions="editor_main">
+    <object id="object (CJ_Dumpster) (1)" breakable="true" interior="0" alpha="255" dimension="0" model="1345" scale="1" doublesided="false" collisions="true" posX="2489" posY="-1659.9" posZ="13.1" rotX="0" rotY="0" rotZ="0"></object>
+    <object id="object (CJ_Dumpster2) (1)" breakable="true" interior="0" alpha="255" dimension="0" model="1344" scale="1" doublesided="false" collisions="true" posX="2488.8" posY="-1663" posZ="13.1" rotX="0" rotY="0" rotZ="0"></object>
+    <object id="object (CJ_Dumpster3) (1)" breakable="true" interior="0" alpha="255" dimension="0" model="1343" scale="1" doublesided="false" collisions="true" posX="2489.1001" posY="-1665.3" posZ="13.1" rotX="0" rotY="0" rotZ="0"></object>
+    <vehicle id="vehicle (Sentinel) (1)" sirens="false" landingGearDown="false" plate="S56E AEQ" paintjob="3" dimension="0" interior="0" health="1000" alpha="255" model="405" collisions="true" posX="2494.2" posY="-1671.2" posZ="13.3" rotX="0" rotY="0" rotZ="0" color="34,25,24,245,245,245,0,0,0,0,0,0"></vehicle>
+    <vehicle id="vehicle (Voodoo) (1)" sirens="false" landingGearDown="false" plate="OMJI ALY" paintjob="3" dimension="0" interior="0" health="1000" alpha="255" model="412" collisions="true" posX="2489.6001" posY="-1670.9" posZ="13.3" rotX="0" rotY="0" rotZ="0" color="63,62,69,189,190,198,0,0,0,0,0,0"></vehicle>
+    <vehicle id="vehicle (Turismo) (1)" sirens="false" landingGearDown="false" plate="73DZ DN6" paintjob="3" dimension="0" interior="0" health="1000" alpha="255" model="451" collisions="true" posX="2484.8999" posY="-1671" posZ="13.1" rotX="0" rotY="0" rotZ="0" color="32,32,44,32,32,44,0,0,0,0,0,0"></vehicle>
+<removeWorldObject id="removeWorldObject (vbg_fir_copse) (2)" radius="63.015308" interior="0" model="791" lodModel="785" posX="-305.82031" posY="-2063.0625" posZ="24.8125" rotX="0" rotY="0" rotZ="0"></removeWorldObject>
+</map>

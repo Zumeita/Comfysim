@@ -15,8 +15,15 @@
 
 // Constants
 #define MAX_VEHICLE_COMPONENTS 14
+#define MAX_REMOVED_OBJECTS 300
+
 enum E_VEHICLE_DATA {
 	vehicle_id, colour1, colour2
+}
+
+enum E_REMOVED_OBJECTS_DATA {
+	rm_modelid, rm_lodmodel,
+	Float:rmx, Float:rmy, Float:rmz, Float:rm_radius
 }
 
 // Iterators
@@ -34,6 +41,9 @@ new //Iterator:iMapObjects<MAX_OBJECTS>, // Tracks map objects created by J_Crea
 	gVehicleData[MAX_VEHICLES][E_VEHICLE_DATA],
 	gVehicleMods[MAX_VEHICLES][MAX_VEHICLE_COMPONENTS],
 	gVehicles,
+
+	gRemovedObjectData[MAX_REMOVED_OBJECTS][E_REMOVED_OBJECTS_DATA],
+	gRemovedObjects,
 
 	gObjectIdTracker = INVALID_OBJECT_ID,
 	gVehicleIdTracker = INVALID_VEHICLE_ID
@@ -62,6 +72,23 @@ new //Iterator:iMapObjects<MAX_OBJECTS>, // Tracks map objects created by J_Crea
 
 #include <streamer>
 
+/* gRemovedObjectId[MAX_REMOVED_OBJECTS],
+	gRemovedObjects,
+	*/
+
+forward J_RemoveWorldObject(modelid, lodmodel, Float:x, Float:y, Float:z, Float:radius);
+public J_RemoveWorldObject(modelid, lodmodel, Float:x, Float:y, Float:z, Float:radius)
+{
+	gRemovedObjectData[gRemovedObjects][rm_modelid] = modelid;
+	gRemovedObjectData[gRemovedObjects][rm_lodmodel] = lodmodel;
+	gRemovedObjectData[gRemovedObjects][rmx] = x;
+	gRemovedObjectData[gRemovedObjects][rmy] = y;
+	gRemovedObjectData[gRemovedObjects][rmz] = z;
+	gRemovedObjectData[gRemovedObjects][rm_radius] = radius;
+	gRemovedObjects++;
+	return 1;
+}
+
 forward J_CreateDynamicObject(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, worldid, interiorid, playerid, Float:streamdistance, Float:drawdistance, bool:ismap);
 public J_CreateDynamicObject(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, worldid, interiorid, playerid, Float:streamdistance, Float:drawdistance, bool:ismap)
 {
@@ -82,8 +109,8 @@ public J_CreateDynamicObject(modelid, Float:x, Float:y, Float:z, Float:rx, Float
 	
 	if(ismap) { // If this bool is true, this object was added using J_MapLoader, so it is removed OnFilterScriptExit() of J_MapLoader, not elsewhere.
 		gMapObjectData[gMapObjects] = gObjectIdTracker; // Add the Object ID to the Map objects ID storage array at the same index as the Iteration.
+		P:4("[J_Functions] DEBUG: J_CreateDynamicObject function parsed successfully with object ID %d, ismap = true, count was %d.", gMapObjectData[gMapObjects], gMapObjects);
 		gMapObjects++;
-		P:4("[J_Functions] DEBUG: J_CreateDynamicObject function parsed successfully with vehicle ID %d, ismap = true, count is now %d.", gMapObjectData[gMapObjects], gMapObjects);
 		gObjectIdTracker = INVALID_OBJECT_ID;
 		return gObjectIdTracker;
 	}
@@ -144,12 +171,13 @@ J_AddComponentsToVehicle(vehicleid, vidx, bool:ismap, Spoiler, Hood, Roof, Sides
 	return 1;
 }
 
-forward J_CreateVehicle(vehicletype, Float:x, Float:y, Float:z, Float:rotation, color1, color2, respawn_delay, addsiren, bool:ismap, bool:ismodified, Spoiler, Hood, Roof, Sideskirt, Lamps, Nitro, Exhaust, Wheels, Stereo, Hydraulics, Front_Bumper, Rear_Bumper, Vent_Right, Vent_Left);
-public J_CreateVehicle(vehicletype, Float:x, Float:y, Float:z, Float:rotation, color1, color2, respawn_delay, addsiren, bool:ismap, bool:ismodified, Spoiler, Hood, Roof, Sideskirt, Lamps, Nitro, Exhaust, Wheels, Stereo, Hydraulics, Front_Bumper, Rear_Bumper, Vent_Right, Vent_Left) {
+forward J_CreateVehicle(vehicletype, Float:x, Float:y, Float:z, Float:rotation, color1, color2, respawn_delay, addsiren, interior, bool:ismap, bool:ismodified, Spoiler, Hood, Roof, Sideskirt, Lamps, Nitro, Exhaust, Wheels, Stereo, Hydraulics, Front_Bumper, Rear_Bumper, Vent_Right, Vent_Left);
+public J_CreateVehicle(vehicletype, Float:x, Float:y, Float:z, Float:rotation, color1, color2, respawn_delay, addsiren, interior, bool:ismap, bool:ismodified, Spoiler, Hood, Roof, Sideskirt, Lamps, Nitro, Exhaust, Wheels, Stereo, Hydraulics, Front_Bumper, Rear_Bumper, Vent_Right, Vent_Left) {
 	//gVehicleCountTracker = (Iter_Count(iVehicles));
 	P:4("[J_Functions] DEBUG: J_CreateVehicle function call");
 
 	gVehicleIdTracker = CreateVehicle(vehicletype, x, y, z, rotation, color1, color2, respawn_delay, addsiren);
+	LinkVehicleToInterior(gVehicleIdTracker, interior);
 	P:4("J_Functions] DEBUG: J_CreateVehicle ID %d", gVehicleIdTracker);
 
 	if(gVehicleIdTracker == INVALID_VEHICLE_ID) { // Vehicle did not create successfully
