@@ -1,5 +1,5 @@
-# Comfysim Changelog
-All notable changes documented here for reference.
+#Recent Changes (Changelog)
+##Build version 0.1.2 ALPHA
 Docuentation started 07/12/2020 - any changes/implementations before then have not been noted here.
 
 ##Version [0.1.2] 09/12/2020
