@@ -1,10 +1,33 @@
 # Recent Changes (Changelog)
-## Build version 0.1.2 ALPHA
+## Build version 0.2.2 ALPHA
 Docuentation started 07/12/2020 - any changes/implementations before then have not been noted here.
+
+#### 11/12/2020
+##### Added Functionality
+- Base Gamemode code has been recoded into version 0.2.x
+- J_MapLoader: is now version 2.1 (See bug fixes below).
+- J_MapLoader: Implemented a method to store 'Long draw distance' model IDs, such as Runways, large objects, etc.
+- Registration, Login system (with auto-login) implemented, file system using Y_Ini
+- Basic Skin selection implemented, to be impoved on in the future, implemented Y_Classes.
+- Death textdraws 'Wasted' implemented - basically a copy of GTA Online's death text.
+##### Mapping
+- Some modifications to the interior of LSPD - however these aren't working at Skin Selection, so this is a WIP.
+##### Bug Fixes
+- J_MapLoader: Major rewrite of Maps.ini loading code to function correctly after user input to the file
+- J_MapLoader: String sizes adjusted to fix bug where many decimal places in float values of a .MAP file would cause the object not to load.
+- J_MapLoader: Small adjustment to the .MAP parsing code to fix Z Rotation of Objects & Vehicles not loading correctly.
+- J_MapLoader: Adjustment to a loop within the J_MapLoaderFuncs.inc file to allow setting of the Interior value parsed from the .MAP file
+- Overhaul of the gamemode to 0.2.x fixed a major bug where 'sometimes' a death would run through the spawn sequence again.
+- Loading & Saving code is properly working now after the overhaul and addition of Y_Ini.
+- J_MentalState: A bug where the player colour would not load correctly, this was fixed during the overhaul to 0.2.x
+- Screen fades given more resources so they are alot smoother now.
+- General code optimiziation is on-going as and when.
+
+
 
 #### 09/12/2020
 #####  Added Functionality
-- J_MapLoader has been redone, version 2.0 is now current.
+- J_MapLoader has been overhauled, version 2.0 is now current.
 - J_MapLoader can now load MTA .map files directly from the [Maps directory](scriptfiles/Comfysim/Maps), with the file name entered in [maps.ini](scriptfiles/Comfysim/Maps/maps.ini)
 - J_MapLoader currently supports Objects, Vehicles & Removed World Objects - note: vehicle colours, paintjobs & modifications are not supported.
 
