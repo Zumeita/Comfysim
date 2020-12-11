@@ -26,195 +26,221 @@ enum E_REMOVED_OBJECTS_DATA {
 	Float:rmx, Float:rmy, Float:rmz, Float:rm_radius
 }
 
-// Iterators
-new //Iterator:iMapObjects<MAX_OBJECTS>, // Tracks map objects created by J_CreateDynamicObject
-	gMapObjectData[MAX_OBJECTS],
-	gMapObjects,
-	//Iterator:iObjects<MAX_OBJECTS>, // Tracks all other objects created in other scripts
-	gObjectData[MAX_OBJECTS],
-	gObjects,
-	//Iterator:iMapVehicles<MAX_VEHICLES>, // Tracks vehicles created by J_CreateVehicle
-	gMapVehicleData[MAX_VEHICLES][E_VEHICLE_DATA],
-	gMapVehicleMods[MAX_VEHICLES][MAX_VEHICLE_COMPONENTS],
-	gMapVehicles,
-	//Iterator:iVehicles<MAX_VEHICLES>, // Tracks all other vehicles created in other scripts
-	gVehicleData[MAX_VEHICLES][E_VEHICLE_DATA],
-	gVehicleMods[MAX_VEHICLES][MAX_VEHICLE_COMPONENTS],
-	gVehicles,
-
-	gRemovedObjectData[MAX_REMOVED_OBJECTS][E_REMOVED_OBJECTS_DATA],
-	gRemovedObjects,
-
-	gObjectIdTracker = INVALID_OBJECT_ID,
-	gVehicleIdTracker = INVALID_VEHICLE_ID
-	//gObjectCountTracker,
-	//gVehicleCountTracker
-;
-
-// Function redefinitions
-/*#if defined CreateDynamicObject // So we can use CreateDynamicObject straight from a converter without having to change to J_CreateDynamicObject
-	#undef CreateDynamicObject
-#endif
-#define CreateDynamicObject J_CreateDynaimcObject*/
-
-
-
-// Functions
-
-/*hook OnFilterScriptInit() { // Initialize the Iterators as they are multi-dimensional.
-	Iter_Init(iMapObjects);
-	Iter_Init(iObjects);
-	Iter_Init(iMapVehicles);
-	Iter_Init(iVehicles);
-	return 1;
-}
-*/
 
 #include <streamer>
-
-/* gRemovedObjectId[MAX_REMOVED_OBJECTS],
-	gRemovedObjects,
-	*/
-
-forward J_RemoveWorldObject(modelid, lodmodel, Float:x, Float:y, Float:z, Float:radius);
-public J_RemoveWorldObject(modelid, lodmodel, Float:x, Float:y, Float:z, Float:radius)
-{
-	gRemovedObjectData[gRemovedObjects][rm_modelid] = modelid;
-	gRemovedObjectData[gRemovedObjects][rm_lodmodel] = lodmodel;
-	gRemovedObjectData[gRemovedObjects][rmx] = x;
-	gRemovedObjectData[gRemovedObjects][rmy] = y;
-	gRemovedObjectData[gRemovedObjects][rmz] = z;
-	gRemovedObjectData[gRemovedObjects][rm_radius] = radius;
-	gRemovedObjects++;
-	return 1;
-}
-
-forward J_CreateDynamicObject(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, worldid, interiorid, playerid, Float:streamdistance, Float:drawdistance, bool:ismap);
-public J_CreateDynamicObject(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, worldid, interiorid, playerid, Float:streamdistance, Float:drawdistance, bool:ismap)
-{
-//stock J_CreateDynamicObject(modelid, Float:x, Float:y, Float:z, Float:rx, Float:ry, Float:rz, worldid = -1, interiorid = -1, playerid = -1, Float:streamdistance = STREAMER_OBJECT_SD, Float:drawdistance = STREAMER_OBJECT_DD, bool:ismap = true, STREAMER_TAG_AREA areaid = STREAMER_TAG_AREA -1, priority = 0) {
-	//gObjectCountTracker = (Iter_Count(iObjects)+1); // This also serves to reset the variable since last use.
-
-	P:4("[J_Functions] DEBUG: J_CreateDynamicObject function call");
-
-	if(streamdistance == -1.0) { streamdistance = STREAMER_OBJECT_SD; }
-	if(drawdistance == -1.0) { drawdistance = STREAMER_OBJECT_DD; }
-
-	// CreateDynamicObject returns the Object ID of the newly created object.
-	gObjectIdTracker = CreateDynamicObject(modelid, x, y, z, rx, ry, rz, worldid, interiorid, playerid, streamdistance, drawdistance, STREAMER_TAG_AREA:-1, 0);
-	if(!(gObjectIdTracker!= INVALID_OBJECT_ID)) {  // Object did not create successfully
-		P:4("[J_Functions] ERROR: Object was not created.");
-		return INVALID_OBJECT_ID;
-	}
-	
-	if(ismap) { // If this bool is true, this object was added using J_MapLoader, so it is removed OnFilterScriptExit() of J_MapLoader, not elsewhere.
-		gMapObjectData[gMapObjects] = gObjectIdTracker; // Add the Object ID to the Map objects ID storage array at the same index as the Iteration.
-		P:4("[J_Functions] DEBUG: J_CreateDynamicObject function parsed successfully with object ID %d, ismap = true, count was %d.", gMapObjectData[gMapObjects], gMapObjects);
-		gMapObjects++;
-		gObjectIdTracker = INVALID_OBJECT_ID;
-		return gObjectIdTracker;
-	}
-
-	//Iter_Add(iObjects, gObjectCountTracker); // Add the Object ID returned from CreateDynamicObject() to the Iterator iObjects for referencing.
-	gObjectData[gObjects] = gObjectIdTracker; // Add the Object ID to the global 'other' Objects ID storage array at the same index as the Iteration.
-	gObjects++;
-	P:4("[J_Functions] DEBUG: J_CreateDynamicObject function parsed successfully with object ID %d, ismap = false, count is now %d.", gObjectData[gObjects], gObjects);
-	gObjectIdTracker = INVALID_OBJECT_ID;
-	return gObjectIdTracker; // This function can return a Object ID, doesn't really matter.
-}
-
-
-J_AddComponentsToVehicle(vehicleid, vidx, bool:ismap, Spoiler, Hood, Roof, Sideskirt, Lamps, Nitro, Exhaust, Wheels, Stereo, Hydraulics, Front_Bumper, Rear_Bumper, Vent_Right, Vent_Left) { // Disgusting function - Not sure how to clean this up. I'll work to find a way but the functionality is there!
-	if(ismap) {
-		P:4("[J_Functions] DEBUG: J_AddComponentsToVehicle called, ismap = true");
-		gMapVehicleMods[vidx][0] = Spoiler;
-		gMapVehicleMods[vidx][1] = Hood;
-		gMapVehicleMods[vidx][2] = Roof;
-		gMapVehicleMods[vidx][3] = Sideskirt;
-		gMapVehicleMods[vidx][4] = Lamps;
-		gMapVehicleMods[vidx][5] = Nitro;
-		gMapVehicleMods[vidx][6] = Exhaust;
-		gMapVehicleMods[vidx][7] = Wheels;
-		gMapVehicleMods[vidx][8] = Stereo;
-		gMapVehicleMods[vidx][9] = Hydraulics;
-		gMapVehicleMods[vidx][10] = Front_Bumper;
-		gMapVehicleMods[vidx][11] = Rear_Bumper;
-		gMapVehicleMods[vidx][12] = Vent_Right;
-		gMapVehicleMods[vidx][13] = Vent_Left;
-
-		for(new idx; idx < MAX_VEHICLE_COMPONENTS; idx++) {
-			AddVehicleComponent(vehicleid, gMapVehicleMods[vidx][idx]);
-		}
-		return 1;
-	}
-
-	P:4("[J_Functions] DEBUG: J_AddComponentsToVehicle called, ismap = false");
-	gVehicleMods[vidx][0] = Spoiler;
-	gVehicleMods[vidx][1] = Hood;
-	gVehicleMods[vidx][2] = Roof;
-	gVehicleMods[vidx][3] = Sideskirt;
-	gVehicleMods[vidx][4] = Lamps;
-	gVehicleMods[vidx][5] = Nitro;
-	gVehicleMods[vidx][6] = Exhaust;
-	gVehicleMods[vidx][7] = Wheels;
-	gVehicleMods[vidx][8] = Stereo;
-	gVehicleMods[vidx][9] = Hydraulics;
-	gVehicleMods[vidx][10] = Front_Bumper;
-	gVehicleMods[vidx][11] = Rear_Bumper;
-	gVehicleMods[vidx][12] = Vent_Right;
-	gVehicleMods[vidx][13] = Vent_Left;
-
-	for(new idx; idx < MAX_VEHICLE_COMPONENTS; idx++) {
-		AddVehicleComponent(vehicleid, gMapVehicleMods[vidx][idx]);
-	}
-	
-	return 1;
-}
-
-forward J_CreateVehicle(vehicletype, Float:x, Float:y, Float:z, Float:rotation, color1, color2, respawn_delay, addsiren, interior, bool:ismap, bool:ismodified, Spoiler, Hood, Roof, Sideskirt, Lamps, Nitro, Exhaust, Wheels, Stereo, Hydraulics, Front_Bumper, Rear_Bumper, Vent_Right, Vent_Left);
-public J_CreateVehicle(vehicletype, Float:x, Float:y, Float:z, Float:rotation, color1, color2, respawn_delay, addsiren, interior, bool:ismap, bool:ismodified, Spoiler, Hood, Roof, Sideskirt, Lamps, Nitro, Exhaust, Wheels, Stereo, Hydraulics, Front_Bumper, Rear_Bumper, Vent_Right, Vent_Left) {
-	//gVehicleCountTracker = (Iter_Count(iVehicles));
-	P:4("[J_Functions] DEBUG: J_CreateVehicle function call");
-
-	gVehicleIdTracker = CreateVehicle(vehicletype, x, y, z, rotation, color1, color2, respawn_delay, addsiren);
-	LinkVehicleToInterior(gVehicleIdTracker, interior);
-	P:4("J_Functions] DEBUG: J_CreateVehicle ID %d", gVehicleIdTracker);
-
-	if(gVehicleIdTracker == INVALID_VEHICLE_ID) { // Vehicle did not create successfully
-		P:4("[J_Functions] ERROR: Vehicle was not created.");
-		return INVALID_VEHICLE_ID;
-	}
-
-	if(ismodified) {
-		P:4("[J_Functions] DEBUG: J_CreateVehicle vehicle id %d is modified.", gMapVehicleData[gVehicles][vehicle_id]);
-		if(ismap) {
-			J_AddComponentsToVehicle(gVehicleIdTracker, gMapVehicles , ismap, Spoiler, Hood, Roof, Sideskirt, Lamps, Nitro, Exhaust, Wheels, Stereo, Hydraulics, Front_Bumper, Rear_Bumper, Vent_Right, Vent_Left);
-		}
-		else {
-			J_AddComponentsToVehicle(gVehicleIdTracker, gVehicles , ismap, Spoiler, Hood, Roof, Sideskirt, Lamps, Nitro, Exhaust, Wheels, Stereo, Hydraulics, Front_Bumper, Rear_Bumper, Vent_Right, Vent_Left);
-		}
-	}
-
-	if(ismap) { // If this bool is true, this vehicle was added using J_MapLoader, so it is removed OnFilterScriptExit() of J_MapLoader, not elsewhere.
-		//Iter_Add(iMapVehicles, gVehicleCountTracker+1);
-		gMapVehicleData[gMapVehicles][vehicle_id] = gVehicleIdTracker;
-		gMapVehicles++;
-		P:4("[J_Functions] DEBUG: J_CreateVehicle function parsed successfully with vehicle ID %d, ismap = true, count is now %d.", gVehicleIdTracker, gMapVehicles);
-		gVehicleIdTracker = INVALID_VEHICLE_ID;
-		return gVehicleIdTracker;
-	}
-
-	//Iter_Add(iVehicles, gVehicleCountTracker); // Add to the global iVehicles iterator.
-	gVehicleData[gVehicles][vehicle_id] = gVehicleIdTracker;
-	gVehicles++;
-	P:4("[J_Functions] DEBUG: J_CreateVehicle function parsed successfully with vehicle ID %d, ismap = false, count is now %d.", gVehicleIdTracker, gMapVehicles);
-	gVehicleIdTracker = INVALID_VEHICLE_ID;
-	return gVehicleIdTracker;
-
-}
 
 forward Float:GetDistBetweenTwoPoints(Float:x, Float:y, Float:z, Float:x2, Float:y2, Float:z2);
 public Float:GetDistBetweenTwoPoints(Float:x, Float:y, Float:z, Float:x2, Float:y2, Float:z2)
 {
 	return floatsqroot(floatpower(floatabs(floatsub(x, x2)),2)+floatpower(floatabs(floatsub(y, y2)),2)+floatpower(floatabs(floatsub(z, z2)),2));
+}
+
+SendClientMessageToAllConnected(colour, const string[])
+{
+	for(new idx = 0; idx < GetMaxPlayers(); idx++)
+	{
+	    if(IsPlayerConnected(idx) && !IsPlayerNPC(idx) && !pData[idx][LoggingIn] && !pData[idx][Registering]) // Player is connected, not an NPC and has passed the spawn sequence.
+	    {
+	        SendClientMessage(idx, colour, string);
+		}
+	}
+
+	return 1;
+}
+
+SkipClassSelection(playerid) {
+	P:1("SkipClassSelection(%d): JustDied = %d, LoggingIn = %d, Registering = %d", playerid, pData[playerid][JustDied], pData[playerid][LoggingIn], pData[playerid][Registering]);
+	SetSpawnInfo(playerid, 0, pData[playerid][Skin], 0.0, 0.0, 0.0, 0.0, 0, 0, 0, 0, 0, 0);
+	SpawnPlayer(playerid);
+	TogglePlayerControllable(playerid, false);
+	P:1("SkipClassSelection(%d): End of function", playerid);
+}
+
+GetPlayerFile(playerid) {
+	new fileToRead[MAX_PLAYER_FILE_LEN];
+	format(fileToRead, MAX_PLAYER_FILE_LEN, "/Comfysim/Accounts/%s.ini", GetPlayerNameEx(playerid));
+	return fileToRead;
+}
+
+RequestPlayerLogin(playerid) {
+	P:1("RequestPlayerLogin(%d): JustDied = %d, LoggingIn = %d, Registering = %d", playerid, pData[playerid][JustDied], pData[playerid][LoggingIn], pData[playerid][Registering]);
+	FadeScreenToTransparent(playerid, 200, 100);
+	//pData[playerid][LoggingIn] = 1;// Set to avoid OnPlayerRequestClass()
+	ShowPlayerDialog(playerid, DIALOG_LOGIN, DIALOG_STYLE_PASSWORD, "Login", "{FFFFFF}Welcome to {FFFF6C}Comfysim{FFFFFF}!\nYour current IP Address does not match the one we have on file for you.\nPlease login so we can confirm your identity and update your IP Address for future logins.", "Login", "Exit");
+	P:1("RequestPlayerLogin(%d): End of function.", playerid);
+	return 1;
+}
+
+SendPlayerToHospital(playerid) {
+
+	P:1("SendPlayerToHospital(%d): JustDied = %d, LoggingIn = %d, Registering = %d", playerid, pData[playerid][JustDied], pData[playerid][LoggingIn], pData[playerid][Registering]);
+
+	new 
+		Float:distance_tracker, Float:hospital_distance = 1000000.0, idx,
+		Float:x =  pData[playerid][death_x], Float:y =  pData[playerid][death_y], Float:z =  pData[playerid][death_z]
+	;
+
+	for(new i; i < 8; i++) {
+		distance_tracker = GetDistBetweenTwoPoints(x, y, z, HospitalData[i][hx], HospitalData[i][hy], HospitalData[i][hz]);
+
+		if(hospital_distance > distance_tracker) {
+			hospital_distance = distance_tracker;
+			idx = i;
+		}
+	}
+
+	HideWastedTextdraw(playerid);
+	SetPlayerPos(playerid, HospitalData[idx][hx], HospitalData[idx][hy], HospitalData[idx][hz]);
+	SetPlayerFacingAngle(playerid, HospitalData[idx][hr]);
+	TogglePlayerControllable(playerid, false);
+	pData[playerid][JustDied] = 0;
+	SetTimerEx("StopSpawnAnimation", 6000, false, "i", playerid);
+	P:1("SendPlayerToHospital(%d): End of function. JustDied = %d", playerid, pData[playerid][JustDied]);
+
+	return 1;
+}
+
+FadeScreenToBlack(playerid, length, changes) {
+	P:1("FadeScreenToBlack(%d, %d, %d): Called", playerid, length, changes);
+	FadePlayerScreenColour(playerid, SCREEN_COLOUR_BLACK, length, changes);
+	return 1;
+}
+
+FadeScreenToTransparent(playerid, length, changes) {
+	P:1("FadeScreenToTransparent(%d, %d, %d): Called", playerid, length, changes);
+	FadePlayerScreenColour(playerid, SCREEN_COLOUR_TRANSPARENT, length, changes);
+	return 1;
+}
+
+stock StartSpawnAnimation(playerid) {
+	switch(gSpawnLocations[pData[playerid][SpawnIdx]][spawn_action]) {
+		case SPAWN_SITTING: {
+			ApplyAnimation(playerid, "PED", "SEAT_IDLE", 4.0, 1, 0, 0, 1, 25000, 1);
+			P:1("StartSpawnAnimation Sitting");
+		}
+		case SPAWN_SMOKING: {
+			SetPlayerSpecialAction(playerid, SPECIAL_ACTION_SMOKE_CIGGY);
+			ApplyAnimation(playerid, "GANGS", "SMKCIG_PRTL", 4.0, 1, 0, 0, 1, 25000, 1); // smoke cig
+			P:1("StartSpawnAnimation Smoking");
+		}
+
+	}
+}
+
+forward StopSpawnAnimation(playerid);
+public StopSpawnAnimation(playerid) {
+	switch(gSpawnLocations[pData[playerid][SpawnIdx]][spawn_action]) {
+		case SPAWN_SITTING: {
+			P:1("StopSpawnAnimation case SPAWN_SITTING");
+			ApplyAnimation(playerid, "PED", "SEAT_UP", 4.0, 0, 0, 0, 0, 0, 1);
+			SetTimerEx("StopAllAnimationsAndUnfreeze", 1500, false, "d", playerid);
+			//TogglePlayerControllable(playerid, true);
+		}
+		case SPAWN_SMOKING: {
+			StopAllAnimationsAndUnfreeze(playerid);
+			P:1("StopSpawnAnimation case SPAWN_SMOKING");
+		}
+	}
+
+	FadeScreenToTransparent(playerid, 2000, 100);
+	pData[playerid][SpawnIdx] = 0;
+	return 1;
+}
+
+forward  StopAllAnimationsAndUnfreeze(playerid);
+public StopAllAnimationsAndUnfreeze(playerid) {
+	SetPlayerSpecialAction(playerid, SPECIAL_ACTION_NONE);
+	ClearAnimations(playerid, 1);
+	TogglePlayerControllable(playerid, true);
+	return 1;
+}
+
+stock SetRegistrationPosition(playerid) {
+	P:1("SetRegistrationPosition() Called");
+	SetPlayerPos(playerid, 1947.0, -846.09, 0.0);
+	SetPlayerCameraPos(playerid, 1947.0, -846.09, 129.4);
+	SetPlayerCameraLookAt(playerid, 1499.5, -1228.9, 81.7);
+	//PlayerPlaySound(playerid, 35451, 1947.0, -846.09, 129.4); // Follow the train CJ!
+	return 1;
+}
+
+
+stock StartRegistrationForPlayer(playerid) {
+	P:1("[DEBUG]: StartRegistrationForPlayer");
+	//SetRegistrationPosition(playerid);
+	FadeScreenToTransparent(playerid, 2500, 100);
+
+	new str[256];
+	format(str, sizeof(str), "{FFFFFF}Welcome to {FFFF6C}Comfysim{FFFFFF}!\nPlease enter a password below to create an account.\nPassword must be between {FFFF6C}%d {FFFFFF}and {FFFF6C}%d {FFFFFF}characters in length.", PASSWORD_MIN_LEN, PASSWORD_MAX_LEN);
+	ShowPlayerDialog(playerid, DIALOG_REGISTER, DIALOG_STYLE_PASSWORD, "Registration", str, "Register", "Quit");
+	pData[playerid][Registering] = 1;
+	return 1;
+}
+
+
+
+// Returns 0 if no file found, 1 if a file is found.
+stock IsPlayerRegistered(playerid) {
+	P:1("IsplayerRegistered");
+	new fileToRead[MAX_PLAYER_FILE_LEN], File:file;
+	format(fileToRead, MAX_PLAYER_FILE_LEN, "Comfysim/Accounts/%s.ini", GetPlayerNameEx(playerid));
+	file = fopen(fileToRead, io_read);
+
+	if(!file) {
+		P:1("IsplayerRegistered NO FILE.");
+		return 0;
+	}
+
+	P:1("IsplayerRegistered FOUND FILE.");
+	return 1;
+}
+
+
+stock GetPlayerNameEx(playerid) {
+	new player_name[MAX_PLAYER_NAME];
+	GetPlayerName(playerid, player_name, MAX_PLAYER_NAME);
+	return player_name;
+}
+
+//Currently unused, but will be needed perhaps in the future.
+stock GetPlayerIpEx(playerid) {
+	new player_ip[16];
+	GetPlayerIp(playerid, player_ip, 16);
+	return player_ip;
+}
+
+stock SendWelcomeMessage(playerid)
+{
+	for(new idx = 0; idx < 10; idx++) // 10 chat lines as standard.
+	{
+	    SendClientMessage(playerid, 0xFFFFFFFF, " "); // Blank message
+	}
+	
+	SendClientMessage(playerid, CHAT_COLOUR_WHITE, " ");
+	SendClientMessage(playerid, CHAT_COLOUR_WHITE, " ");
+	SendClientMessage(playerid, CHAT_COLOUR_WHITE, " ");
+	
+	new string[128], player_name[MAX_PLAYER_NAME];
+	GetPlayerName(playerid, player_name, MAX_PLAYER_NAME);
+	
+	if(IsPlayerRegistered(playerid))
+	{
+		format(string, sizeof(string), "{FFFFFF}Welcome back to the server {FFFF6C}%s{FFFFFF}!", player_name);
+		SendClientMessage(playerid, CHAT_COLOUR_WHITE, string);
+		SendClientMessage(playerid, CHAT_COLOUR_WHITE, "Your data has automatically been restored from the last time you were here.");
+	}
+	else
+	{
+		format(string, sizeof(string), "{FFFFFF}Welcome to the server {FFFF6C}%s{FFFFFF}!", player_name);
+		SendClientMessage(playerid, CHAT_COLOUR_WHITE, string);
+		SendClientMessage(playerid, CHAT_COLOUR_WHITE, "Your stats will be automatically saved without any input from you.");
+		SendClientMessage(playerid, CHAT_COLOUR_WHITE, "They will also be restored automatically next time you connect!");
+	}
+	
+	SendClientMessage(playerid, CHAT_COLOUR_WHITE, "Type {FFFF6C}/cmds {FFFFFF}for a list of commands.");
+	SendClientMessage(playerid, CHAT_COLOUR_WHITE, " ");
+	SendClientMessage(playerid, CHAT_COLOUR_WHITE, "Enjoy your time here and {FF8080}don't be a dick{ffffff}!");
+	SendClientMessage(playerid, CHAT_COLOUR_WHITE, " ");
+	
+	return 1;
 }
