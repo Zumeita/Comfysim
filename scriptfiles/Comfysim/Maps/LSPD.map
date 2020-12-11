@@ -1,0 +1,14 @@
+<map edf:definitions="editor_main">
+    <ped id="ped (1)" interior="6" rotZ="0.003" dimension="0" model="115" health="100" armor="0" collisions="true" alpha="255" posX="254.8" posY="83.1" posZ="1002.4" rotX="0" rotY="0"></ped>
+    <object id="object (POLICE_NB1) (1)" breakable="true" interior="6" alpha="255" dimension="0" model="2611" scale="1" doublesided="false" collisions="true" posX="256.79999" posY="81.9" posZ="1003.5" rotX="0" rotY="0" rotZ="180"></object>
+    <object id="object (POLICE_NB1) (2)" breakable="true" interior="6" alpha="255" dimension="0" model="2611" scale="1" doublesided="false" collisions="true" posX="252.8" posY="81.9" posZ="1003.5" rotX="0" rotY="0" rotZ="179.995"></object>
+    <object id="object (POLCE_DESK1) (1)" breakable="true" interior="6" alpha="255" dimension="0" model="2605" scale="1" doublesided="false" collisions="true" posX="256.70001" posY="82.9" posZ="1001.8" rotX="0" rotY="0" rotZ="90"></object>
+    <object id="object (POLCE_DESK2) (2)" breakable="true" interior="6" alpha="255" dimension="0" model="2607" scale="1" doublesided="false" collisions="true" posX="256.69" posY="86.5" posZ="1001.8" rotX="0" rotY="0" rotZ="270"></object>
+    <object id="object (CJ_P_FILEING2) (1)" breakable="true" interior="6" alpha="255" dimension="0" model="2610" scale="1" doublesided="false" collisions="true" posX="258.65002" posY="82.1" posZ="1002.24" rotX="0" rotY="0" rotZ="180"></object>
+    <object id="object (police_OFF_CHAIR) (1)" breakable="true" interior="6" alpha="255" dimension="0" model="2356" scale="1" doublesided="false" collisions="true" posX="257.89999" posY="82.4" posZ="1001.4" rotX="0" rotY="0" rotZ="59.995"></object>
+    <object id="object (police_OFF_CHAIR) (2)" breakable="true" interior="6" alpha="255" dimension="0" model="2356" scale="1" doublesided="false" collisions="true" posX="257.79999" posY="86.2" posZ="1001.4" rotX="0" rotY="0" rotZ="82.241"></object>
+    <object id="object (POLCE_DESK2) (3)" breakable="true" interior="6" alpha="255" dimension="0" model="2607" scale="1" doublesided="false" collisions="true" posX="256.70001" posY="88.5" posZ="1001.8" rotX="0" rotY="0" rotZ="270"></object>
+    <ped id="ped (2)" interior="6" rotZ="180" dimension="0" model="0" health="100" armor="0" collisions="true" alpha="255" posX="254.7" posY="89.3" posZ="1002.4" rotX="0" rotY="0"></ped>
+    <ped id="ped (3)" interior="0" rotZ="0.003" dimension="0" model="0" health="100" armor="0" collisions="true" alpha="255" posX="1947" posY="-846.09998" posZ="129.39999" rotX="0" rotY="0"></ped>
+    <pickup id="pickup (health) (1)" type="health" interior="0" amount="100" respawn="30000" dimension="0" alpha="255" posX="1499.5" posY="-1228.9" posZ="81.7" rotX="0" rotY="0" rotZ="0"></pickup>
+</map>
