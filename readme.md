@@ -1,6 +1,11 @@
 # Recent Changes (Changelog)
-## Build version 0.2.2 ALPHA
+## Build version 0.2.3 ALPHA
 Docuentation started 07/12/2020 - any changes/implementations before then have not been noted here.
+
+#### 15/12/2020
+##### Improvements/Bug Fixes
+- [Issue #9](https://github.com/Zumeita/Comfysim/issues/9) has been resolved & closed, optimisation to code (See issue for more detail).
+- The quite large (~400 changes code wise) has increased the build version to from 0.2.2 to 0.2.3 (Optimisation/patch increment).
 
 #### 11/12/2020
 ##### Added Functionality
