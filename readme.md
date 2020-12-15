@@ -6,6 +6,8 @@ Docuentation started 07/12/2020 - any changes/implementations before then have n
 ##### Improvements/Bug Fixes
 - [Issue #9](https://github.com/Zumeita/Comfysim/issues/9) has been resolved & closed, optimisation to code (See issue for more detail).
 - The quite large (~400 changes code wise) has increased the build version to from 0.2.2 to 0.2.3 (Optimisation/patch increment).
+- [Issue #6](https://github.com/Zumeita/Comfysim/issues/6) has been resolved & closed, gates will now open whilst in a vehicle.
+- [Issue #7](https://github.com/Zumeita/Comfysim/issues/7) has been resolved & closed, 3D Text for gates will now show even if LOS is blocked.
 
 #### 11/12/2020
 ##### Added Functionality
