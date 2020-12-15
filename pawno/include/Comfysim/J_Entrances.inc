@@ -1,3 +1,5 @@
+#include <YSI\YSI_Coding\y_hooks>
+#include <YSI\YSI_Core\y_debug>
 
 // Directory to store/read each Entrance .ini file.
 #define ENTRANCE_FOLDER "Comfysim/Entrances"
@@ -37,7 +39,7 @@ enum ENTRANCE_DATA {
 new gEntData[MAX_ENTRANCES][ENTRANCE_DATA];
 
 // Used to track if a player is near an entrance or not.
-new pEntData[PLAYERS] = ENTRANCE_FALSE;
+new pEntData[MAX_PLAYERS] = ENTRANCE_FALSE;
 
 new gEntranceTemplateType[] = { // 0 = Float, 1 = Integer, 2 = String
 	2, 0, 0, 0, 0, 1, 0, 0, 0, 0, 1, 0, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, ENTRANCE_TYPE_INTERIOR, 1, 2, 1, 1
@@ -145,9 +147,9 @@ stock LoadEntrances() {
 			}
 			else {
 				print("3D Text: IS a gate");
-			    format(string, MAX_3DTEXT_LEN, GATE_TEXT, gEntData[idx][ename]);
+			    format(string, MAX_3DTEXT_LEN, "{CCCCCC}%s\n{CCCCCC}Press '{FFFF6C}~k~~CONVERSATION_YES~{CCCCCC}' to open", gEntData[idx][ename]);
 			    printf("%s", string);
-				gEntData[idx][enter_text_id] = Create3DTextLabel("{CCCCCC}%s\n{CCCCCC}Press '{FFFF6C}~k~~CONVERSATION_YES~{CCCCCC}' to open", 0xCCCCCCAA, gEntData[idx][ox], gEntData[idx][oy], gEntData[idx][oz], TEXT_DRAW_DISTANCE, 0, 1);
+				gEntData[idx][enter_text_id] = Create3DTextLabel(string, 0xCCCCCCAA, gEntData[idx][cx], gEntData[idx][cy], gEntData[idx][cz], TEXT_DRAW_DISTANCE, 0, 0); // testLOS is 0 otherwise gate hides text
 			}
 		}
 		
@@ -179,7 +181,7 @@ hook OnPlayerConnect(playerid) {
 	return 1;
 }
 
-hook OnPlayerDisconnect(playerid) {
+hook OnPlayerDisconnect(playerid, reason) {
 	pEntData[playerid] = ENTRANCE_FALSE;
 	return 1;
 }
@@ -190,8 +192,9 @@ stock IsPlayerInAnyEntrance(playerid) {
 	new Float:x, Float:y, Float:z, interior, Float:distance, vehicleid = INVALID_VEHICLE_ID, ret = ENTRANCE_FALSE;
 	
 	for(new entranceid; entranceid < MAX_ENTRANCES; entranceid++) {
-		if(gEntData[entranceid][vehicles_allowed] == 1) { // Allowed with vehicle and is IN a vehicle.
+		if(gEntData[entranceid][vehicles_allowed]) { // Allowed with vehicle and is IN a vehicle.
 		    if(IsPlayerInAnyVehicle(playerid)) {
+		    	P:1("[J_Entrances]: Vehicle");
 			    vehicleid = GetPlayerVehicleID(playerid);
 			    GetVehiclePos(vehicleid, x, y, z);
 			}
@@ -202,7 +205,8 @@ stock IsPlayerInAnyEntrance(playerid) {
 		else {
 		    if(IsPlayerInAnyVehicle(playerid)) {
 		        ret = ENTRANCE_FALSE;
-				break; // Move onto the next one. Cannot use this entrance even if position was correct.
+		        continue;
+				//break; // Move onto the next one. Cannot use this entrance even if position was correct.
 			}
 			else {
 			    GetPlayerPos(playerid, x, y, z);
