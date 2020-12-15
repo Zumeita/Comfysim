@@ -60,7 +60,7 @@ stock SendChatMessageToAllConnected(playerid, colour, string[])
 	
 	for(new idx = 0; idx < GetMaxPlayers(); idx++)
 	{
-	    if(IsPlayerConnected(idx) && !IsPlayerNPC(idx) && pData[idx][LoggedIn]) // Player is connected, not an NPC and has passed the spawn sequence.
+	    if(IsPlayerSpawned(playerid)) // Player is connected, not an NPC and has passed the spawn sequence.
 	    {
 	        SendClientMessage(idx, colour, text);
 		}
@@ -74,7 +74,7 @@ public PlayerMentalStateUpdate()
 {
 	for(new idx = 0; idx < GetMaxPlayers(); idx++)
 	{
-	    if(IsPlayerConnected(idx) && !IsPlayerNPC(idx) && pData[idx][LoggedIn]) // Player is connected, not an NPC and is passed the spawn sequence.
+	    if(IsPlayerConnected(idx) && !IsPlayerNPC(idx) && IsPlayerLoggedIn(idx)) // Player is connected, not an NPC and is passed the spawn sequence.
 	    {
 	        new mental_state = pData[idx][MentalState];
 	        
